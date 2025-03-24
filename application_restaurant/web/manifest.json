@@ -1,6 +1,6 @@
 {
-    "name": "application_restaurant",
-    "short_name": "application_restaurant",
+    "name": "sae_mobile",
+    "short_name": "sae_mobile",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
