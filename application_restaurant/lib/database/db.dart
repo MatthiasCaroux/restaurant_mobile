@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:sae_mobile/database/fetch_function.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import './fetch_function.dart';
 
 class DatabaseView extends StatelessWidget {
-  Future<List<Map<String, dynamic>>> _fetchAvis() async {
-    try {
-      final response = await Supabase.instance.client.from('Avis').select();
-      return List<Map<String, dynamic>>.from(response);
-    } catch (e) {
-      throw Exception('Erreur lors de la récupération des avis : $e');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Liste des Avis')),
       body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: _fetchAvis(),
+        future: FetchFunction.fetchRestaurant(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -32,7 +26,7 @@ class DatabaseView extends StatelessWidget {
             itemBuilder: (context, index) {
               final avis = avisList[index];
               return ListTile(
-                title: Text(avis['text'] ?? 'Avis sans texte'),
+                title: Text(avis['nom_restaurant'] ?? 'Avis sans texte'),
                 subtitle: Text('ID: ${avis['id'] ?? 'Inconnu'}'),
               );
             },
