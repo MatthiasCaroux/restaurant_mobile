@@ -24,7 +24,7 @@ class InsertFunction {
   async {
     final supabase = Supabase.instance.client;
     final response = await supabase.from('Utilisateur').insert({
-      'Utilisateur': Utilisateur,
+      'username': Utilisateur,
       'password': password,
     });
 
