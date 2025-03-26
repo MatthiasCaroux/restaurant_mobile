@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sae_mobile/database/fetch_function.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import './fetch_function.dart';
 
 class DatabaseView extends StatelessWidget {
+  const DatabaseView({super.key});
 
   @override
   Widget build(BuildContext context) {
