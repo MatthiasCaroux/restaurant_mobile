@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import './views/home.dart';
 import './database/db.dart';
+import './views/Register.dart';
 import './views/avis.dart';
 import './views/favoris.dart';
 import './views/compte.dart';
@@ -20,6 +21,13 @@ final router = GoRouter(
       builder: (context, state) => DatabaseView(),
     ),
     GoRoute(
+      name: "register",
+      path: "/register",
+      builder: (context, state) => RegisterView(),
+    )
+  ],
+
+);
       name: "avis",
       path: "/avis",
       builder: (context, state) => AvisPage(),
