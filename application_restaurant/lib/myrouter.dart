@@ -24,10 +24,8 @@ final router = GoRouter(
       name: "register",
       path: "/register",
       builder: (context, state) => RegisterView(),
-    )
-  ],
-
-);
+    ),
+    GoRoute(
       name: "avis",
       path: "/avis",
       builder: (context, state) => AvisPage(),
