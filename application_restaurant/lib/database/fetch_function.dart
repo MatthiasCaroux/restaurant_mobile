@@ -28,4 +28,20 @@ class FetchFunction {
     throw Exception('Erreur lors de la récupération des utilisateurs : $e');
   }
   }
+  static Future<List<Map<String, dynamic>>> fetchTypeCuisine() async {
+    try {
+    final response = await Supabase.instance.client.from('appartenir_cuisine').select();
+    return List<Map<String, dynamic>>.from(response);
+  } catch (e) {
+    throw Exception('Erreur lors de la récupération des types de cuisine : $e');
+  }
+  }
+  static Future<List<Map<String, dynamic>>> fetchNomTypeCuisineById(id) async {
+    try {
+    final response = await Supabase.instance.client.from('Type_cuisine').select().eq('id_type_cuisine', id);
+    return List<Map<String, dynamic>>.from(response);
+  } catch (e) {
+    throw Exception('Erreur lors de la récupération des types de cuisine : $e');
+  }
+  }
 }
