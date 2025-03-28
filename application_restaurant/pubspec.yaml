@@ -64,6 +64,7 @@ flutter:
     - assets/
     - assets/images/restaurants_images/
     - assets/images/types_cuisines_images/
+    - assets/images/categories_images/
 
 
   #   - images/a_dot_burr.jpeg

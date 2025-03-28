@@ -1,0 +1,2 @@
+/home/matthias/Bureau/restaurant_mobile/restaurant_mobile/application_restaurant/android/app/.cxx/RelWithDebInfo/2i4y05b3/x86_64/CMakeFiles/edit_cache.dir
+/home/matthias/Bureau/restaurant_mobile/restaurant_mobile/application_restaurant/android/app/.cxx/RelWithDebInfo/2i4y05b3/x86_64/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/home/matthias/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/matthias/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/matthias/Bureau/restaurant_mobile/restaurant_mobile/application_restaurant/android/app/.cxx/RelWithDebInfo/2i4y05b3/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/matthias/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/matthias/Bureau/restaurant_mobile/restaurant_mobile/application_restaurant/android/app/.cxx/RelWithDebInfo/2i4y05b3/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

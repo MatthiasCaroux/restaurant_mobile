@@ -41,6 +41,27 @@ class FetchFunction {
     }
   }
 
+  // Récupérer les catégories de restaurant par exemple fast-food, restaurant gastronomique, etc.
+  static Future<List<Map<String, dynamic>>> fetchCategorie() async {
+    try {
+      final response = await Supabase.instance.client
+          .from('Restaurant')
+          .select('type_restaurant')
+          .order('type_restaurant', ascending: true);
+
+      // Supabase ne gère pas directement le DISTINCT sur les .select()
+      // Donc on le fait côté Dart
+      final seen = <String>{};
+      final distinct = response
+          .where((e) => seen.add(e['type_restaurant'] as String))
+          .toList();
+
+      return distinct;
+    } catch (e) {
+      throw Exception('Erreur lors de la récupération des catégories : $e');
+    }
+  }
+
   static Future<List<Map<String, dynamic>>> fetchNomTypeCuisineById(id) async {
     try {
       final response = await Supabase.instance.client
