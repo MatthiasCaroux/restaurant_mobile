@@ -46,7 +46,8 @@ class Home extends StatelessWidget {
                         children: [
                           const CircleAvatar(
                             radius: 50,
-                            backgroundImage: AssetImage('arthur.jpeg'),
+                            backgroundImage:
+                                AssetImage('assets/images/arthur.jpeg'),
                           ),
                           const SizedBox(width: 15),
                           Column(
@@ -78,7 +79,6 @@ class Home extends StatelessWidget {
                         child: const Text('Database'),
                       ),
 
-                      // --- CATEGORIES ---
                       const Padding(
                         padding: EdgeInsets.only(top: 20.0),
                         child: Text(
@@ -87,42 +87,101 @@ class Home extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: List.generate(3, (index) {
-                          return Expanded(
-                            child: Padding(
-                              padding:
-                                  EdgeInsets.only(right: index < 2 ? 8.0 : 0.0),
-                              child: Card(
-                                elevation: 4,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Column(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(12),
-                                        topRight: Radius.circular(12),
-                                      ),
-                                      child: Image.asset(
-                                        'fastfood.jpg',
-                                        height: 100,
-                                        width: double.infinity,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text("Catégorie ${index + 1}"),
-                                    ),
-                                  ],
-                                ),
+
+                      FutureBuilder<List<Map<String, dynamic>>>(
+                        future: FetchFunction.fetchCategorie(),
+                        builder: (context, categorieSnapshot) {
+                          if (categorieSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (categorieSnapshot.hasError) {
+                            return Center(
+                              child: Text(
+                                'Erreur lors du chargement des catégories : ${categorieSnapshot.error}',
+                                style: TextStyle(color: Colors.redAccent),
                               ),
+                            );
+                          } else if (!categorieSnapshot.hasData ||
+                              categorieSnapshot.data!.isEmpty) {
+                            return const Text(
+                              "Aucune catégorie trouvée.",
+                              style: TextStyle(color: Colors.orangeAccent),
+                            );
+                          }
+
+                          final categorieList = categorieSnapshot.data!;
+
+                          return SizedBox(
+                            height: 160,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: categorieList.length,
+                              itemBuilder: (context, index) {
+                                final typeCat = categorieList[index]
+                                        ['type_restaurant'] ??
+                                    'inconnu';
+
+                                final imageName = typeCat
+                                    .toString()
+                                    .toLowerCase()
+                                    .replaceAll(' ', '_')
+                                    .replaceAll('-', '_')
+                                    .replaceAll(RegExp(r'[^a-z0-9_]'), '');
+
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: SizedBox(
+                                    width: 140,
+                                    child: Card(
+                                      elevation: 4,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                              topLeft: Radius.circular(12),
+                                              topRight: Radius.circular(12),
+                                            ),
+                                            child: Image.asset(
+                                              'images/categories_images/$imageName.jpg',
+                                              height: 90,
+                                              width: double.infinity,
+                                              fit: BoxFit.cover,
+                                              errorBuilder:
+                                                  (context, error, stackTrace) {
+                                                return Container(
+                                                  height: 90,
+                                                  width: double.infinity,
+                                                  color: Colors.grey,
+                                                  child: const Icon(Icons
+                                                      .image_not_supported),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              typeCat,
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           );
-                        }),
+                        },
                       ),
 
                       // --- TYPES DE CUISINE ---
@@ -277,7 +336,7 @@ class Home extends StatelessWidget {
                                   bottomLeft: Radius.circular(12),
                                 ),
                                 child: Image.asset(
-                                  'images/restaurants_images/$restaurantName.jpg',
+                                  'assets/images/restaurants_images/$restaurantName.jpg',
                                   width: 120,
                                   height: 120,
                                   fit: BoxFit.cover,
