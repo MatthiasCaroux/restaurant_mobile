@@ -44,10 +44,26 @@ class Home extends StatelessWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const CircleAvatar(
-                            radius: 50,
-                            backgroundImage:
-                                AssetImage('assets/images/arthur.jpeg'),
+                          Container(
+                            width: 100,
+                            height: 100,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.grey[300],
+                            ),
+                            child: ClipOval(
+                              child: Image.asset(
+                                'assets/images/arthur.jpeg',
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Icon(
+                                    Icons.person,
+                                    color: Colors.grey[700],
+                                    size: 50,
+                                  );
+                                },
+                              ),
+                            ),
                           ),
                           const SizedBox(width: 15),
                           Column(
