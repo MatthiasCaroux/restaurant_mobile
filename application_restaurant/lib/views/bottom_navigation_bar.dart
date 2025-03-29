@@ -20,7 +20,7 @@ class Bottom_Navigation_Bar extends StatelessWidget {
         context.go('/search');
         break;
       case 2:
-        context.go('/home');
+        context.go('/');
         break;
       case 3:
         context.go('/avis');
