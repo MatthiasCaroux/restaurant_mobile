@@ -5,11 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7b7503f4-00bc-4513-9576-7634b321ba3d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/application_restaurant/lib/myrouter.dart" beforeDir="false" afterPath="$PROJECT_DIR$/application_restaurant/lib/myrouter.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application_restaurant/lib/views/Register.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/application_restaurant/lib/views/compte.dart" beforeDir="false" afterPath="$PROJECT_DIR$/application_restaurant/lib/views/compte.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application_restaurant/lib/views/details/restaurant_avis_section.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application_restaurant/lib/views/details/restaurant_contact_buttons.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application_restaurant/lib/views/details/restaurant_detail_page.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application_restaurant/lib/views/details/restaurant_header.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application_restaurant/lib/views/details/restaurant_map_section.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application_restaurant/lib/views/home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/application_restaurant/lib/views/home.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application_restaurant/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/application_restaurant/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application_restaurant/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/application_restaurant/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application_restaurant/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/application_restaurant/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,6 +23,13 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dart File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
@@ -27,11 +38,17 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/MatthiasCaroux/restaurant_mobile.git",
+    "accountId": "5f74ee0d-ba90-4803-ba39-210568607ee2"
+  }
+}]]></component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "page__login__signin"
+    "git-widget-placeholder": "details__restaurants__V1"
   }
 }]]></component>
   <component name="TaskManager">
