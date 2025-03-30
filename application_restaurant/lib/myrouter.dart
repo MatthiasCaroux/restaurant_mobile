@@ -1,7 +1,6 @@
 import 'package:go_router/go_router.dart';
 import './views/home.dart';
 import './database/db.dart';
-import './views/Register.dart';
 import './views/avis.dart';
 import './views/favoris.dart';
 import './views/compte.dart';
@@ -19,11 +18,6 @@ final router = GoRouter(
       name: "database",
       path: "/database",
       builder: (context, state) => DatabaseView(),
-    ),
-    GoRoute(
-      name: "register",
-      path: "/register",
-      builder: (context, state) => RegisterView(),
     ),
     GoRoute(
       name: "avis",
@@ -44,6 +38,6 @@ final router = GoRouter(
       name: "search",
       path: "/search",
       builder: (context, state) => SearchPage(),
-    )
+    ),
   ],
 );

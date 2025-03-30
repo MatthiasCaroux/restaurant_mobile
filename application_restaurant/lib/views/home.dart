@@ -31,64 +31,56 @@ class Home extends StatelessWidget {
             );
           }
 
-          final restaurantList = snapshot.data!;
-          return CustomScrollView(
+            final restaurantList = snapshot.data!;
+            return CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 10, top: 25),
-                  child: Column(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 25),
+                child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header profil
+                  Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.grey[300],
+                    ),
+                    child: Icon(
+                      Icons.person,
+                      color: Colors.grey[700],
+                      size: 50,
+                    ),
+                    ),
+                    const SizedBox(width: 15),
+                    Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Header profil
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.grey[300],
-                            ),
-                            child: ClipOval(
-                              child: Image.asset(
-                                'assets/images/arthur.jpeg',
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Icon(
-                                    Icons.person,
-                                    color: Colors.grey[700],
-                                    size: 50,
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 15),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "Bonjour Arthur",
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Text(
-                                "On mange où aujourd'hui ?",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                      const Text(
+                      "Bonjour",
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
                       ),
-                      const SizedBox(height: 20),
+                      ),
+                      Text(
+                      "On mange où aujourd'hui ?",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      ),
+                      ),
+                    ],
+                    ),
+                  ],
+                  ),
+                  const SizedBox(height: 20),
 
                       ElevatedButton(
                         onPressed: () => context.go('/database'),
