@@ -3,6 +3,8 @@ import 'package:sae_mobile/database/fetch_function.dart';
 import 'package:sae_mobile/views/bottom_navigation_bar.dart';
 import 'package:go_router/go_router.dart';
 
+import 'details/restaurant_detail_page.dart';
+
 class Home extends StatelessWidget {
   const Home({super.key});
 
@@ -392,7 +394,12 @@ class Home extends StatelessWidget {
                               IconButton(
                                 icon: const Icon(Icons.chevron_right),
                                 onPressed: () {
-                                  // Action de navigation
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => RestaurantDetailPage(restaurant: restaurant),
+                                    ),
+                                  );
                                 },
                               ),
                             ],
