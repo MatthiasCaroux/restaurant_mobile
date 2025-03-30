@@ -21,7 +21,18 @@ class RestaurantContactButtons extends StatelessWidget {
         runSpacing: 12,
         children: [
           _buildButton(Icons.call, telephone),
-          _buildButton(Icons.category, type),
+            _buildButton(
+            type == 'restaurant'
+              ? Icons.restaurant
+                : type == 'bar'
+                ? Icons.local_bar
+                : type == 'pub'
+                ? Icons.local_bar
+                : type == 'ice cream'
+                  ? Icons.icecream
+                  : Icons.help,
+            type,
+            ),
           _buildButton(Icons.map, departement),
         ],
       ),
