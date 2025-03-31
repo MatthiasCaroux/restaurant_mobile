@@ -5,6 +5,7 @@ import './views/avis.dart';
 import './views/favoris.dart';
 import './views/compte.dart';
 import './views/search.dart';
+import './views/searchCategorie.dart';
 
 final router = GoRouter(
   initialLocation: "/",
@@ -35,9 +36,15 @@ final router = GoRouter(
       builder: (context, state) => ComptePage(),
     ),
     GoRoute(
-      name: "search",
-      path: "/search",
-      builder: (context, state) => SearchPage(),
-    ),
+        name: "search",
+        path: "/search",
+        builder: (context, state) => SearchPage(),
+        routes: [
+          GoRoute(
+            name: "searchCategories",
+            path: "categories",
+            builder: (context, state) => SearchCategoriesPage(),
+          )
+        ]),
   ],
 );
