@@ -138,7 +138,7 @@ class Home extends StatelessWidget {
                                     .toLowerCase()
                                     .replaceAll(' ', '_')
                                     .replaceAll('-', '_')
-                                    .replaceAll(RegExp(r'[^a-z0-9_]'), '');
+                                    .replaceAll(RegExp('[^a-z0-9_]'), '');
 
                                 return Padding(
                                   padding: const EdgeInsets.only(right: 10),
@@ -248,7 +248,7 @@ class Home extends StatelessWidget {
                                       .toLowerCase()
                                       .replaceAll(' ', '_')
                                       .replaceAll('-', '_')
-                                      .replaceAll(RegExp(r'[^a-z0-9_]'), '');
+                                      .replaceAll(RegExp('[^a-z0-9_]'), '');
 
                                   return Padding(
                                     padding: const EdgeInsets.only(right: 10),
@@ -341,7 +341,7 @@ class Home extends StatelessWidget {
                             .toLowerCase()
                             .replaceAll(' ', '_')
                             .replaceAll('-', '_')
-                            .replaceAll(RegExp(r'[^a-z0-9_]'), '');
+                            .replaceAll(RegExp('[^a-z0-9_]'), '');
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Card(
@@ -394,7 +394,7 @@ class Home extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 6),
                                       Text(
-                                        'Type : ${restaurant['type'] ?? 'Non renseigné'}',
+                                        'Type : ${_getFormattedType(restaurant['type_restaurant'] ?? '')}',
                                         style: const TextStyle(
                                           fontSize: 14,
                                           color: Colors.grey,
@@ -430,5 +430,26 @@ class Home extends StatelessWidget {
         },
       ),
     );
+  }
+
+  String _getFormattedType(String type) {
+    switch(type.toLowerCase()) {
+      case 'restaurant':
+        return 'Restaurant';
+      case 'bar':
+        return 'Bar';
+      case 'cafe':
+        return 'Café';
+      case 'fast_food':
+        return 'Fast-food';
+      case 'ice_cream':
+        return 'Glacier';
+      case 'pub':
+        return 'Pub';
+      default:
+        return type.isNotEmpty ? 
+               type[0].toUpperCase() + type.substring(1).replaceAll('_', ' ') : 
+               'Non renseigné';
+    }
   }
 }
