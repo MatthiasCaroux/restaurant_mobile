@@ -4,6 +4,7 @@ import 'package:sae_mobile/views/bottom_navigation_bar.dart';
 import 'package:go_router/go_router.dart';
 
 import 'details/restaurant_detail_page.dart';
+import 'search.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -21,7 +22,7 @@ class Home extends StatelessWidget {
             return Center(
               child: Text(
                 'Erreur lors du chargement des restaurants : ${snapshot.error}',
-                style: TextStyle(color: Colors.redAccent),
+                style: const TextStyle(color: Colors.redAccent),
               ),
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -33,56 +34,56 @@ class Home extends StatelessWidget {
             );
           }
 
-            final restaurantList = snapshot.data!;
-            return CustomScrollView(
+          final restaurantList = snapshot.data!;
+          return CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 25),
-                child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header profil
-                  Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.grey[300],
-                    ),
-                    child: Icon(
-                      Icons.person,
-                      color: Colors.grey[700],
-                      size: 50,
-                    ),
-                    ),
-                    const SizedBox(width: 15),
-                    Column(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 10, top: 25),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                      "Bonjour",
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                      // Header profil
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 100,
+                            height: 100,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.grey[300],
+                            ),
+                            child: Icon(
+                              Icons.person,
+                              color: Colors.grey[700],
+                              size: 50,
+                            ),
+                          ),
+                          const SizedBox(width: 15),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Bonjour",
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                "On mange où aujourd'hui ?",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      ),
-                      Text(
-                      "On mange où aujourd'hui ?",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
-                      ),
-                    ],
-                    ),
-                  ],
-                  ),
-                  const SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
                       ElevatedButton(
                         onPressed: () => context.go('/database'),
@@ -109,7 +110,7 @@ class Home extends StatelessWidget {
                             return Center(
                               child: Text(
                                 'Erreur lors du chargement des catégories : ${categorieSnapshot.error}',
-                                style: TextStyle(color: Colors.redAccent),
+                                style: const TextStyle(color: Colors.redAccent),
                               ),
                             );
                           } else if (!categorieSnapshot.hasData ||
@@ -148,42 +149,48 @@ class Home extends StatelessWidget {
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
-                                      child: Column(
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius:
-                                                const BorderRadius.only(
-                                              topLeft: Radius.circular(12),
-                                              topRight: Radius.circular(12),
-                                            ),
-                                            child: Image.asset(
-                                              'images/categories_images/$imageName.jpg',
-                                              height: 90,
-                                              width: double.infinity,
-                                              fit: BoxFit.cover,
-                                              errorBuilder:
-                                                  (context, error, stackTrace) {
-                                                return Container(
-                                                  height: 90,
-                                                  width: double.infinity,
-                                                  color: Colors.grey,
-                                                  child: const Icon(Icons
-                                                      .image_not_supported),
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              typeCat,
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.w500,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(12),
+                                        onTap: () {
+                                          context.go('/search?type=${Uri.encodeComponent(typeCat)}');
+                                        },
+                                        child: Column(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                topLeft: Radius.circular(12),
+                                                topRight: Radius.circular(12),
+                                              ),
+                                              child: Image.asset(
+                                                'images/categories_images/$imageName.jpg',
+                                                height: 90,
+                                                width: double.infinity,
+                                                fit: BoxFit.cover,
+                                                errorBuilder:
+                                                    (context, error, stackTrace) {
+                                                  return Container(
+                                                    height: 90,
+                                                    width: double.infinity,
+                                                    color: Colors.grey,
+                                                    child: const Icon(
+                                                        Icons.image_not_supported),
+                                                  );
+                                                },
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                typeCat,
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -214,7 +221,7 @@ class Home extends StatelessWidget {
                             return Center(
                               child: Text(
                                 'Erreur lors du chargement des types de cuisine : ${typeSnapshot.error}',
-                                style: TextStyle(color: Colors.redAccent),
+                                style: const TextStyle(color: Colors.redAccent),
                               ),
                             );
                           } else if (!typeSnapshot.hasData ||
@@ -253,42 +260,48 @@ class Home extends StatelessWidget {
                                           borderRadius:
                                               BorderRadius.circular(12),
                                         ),
-                                        child: Column(
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  const BorderRadius.only(
-                                                topLeft: Radius.circular(12),
-                                                topRight: Radius.circular(12),
+                                        child: InkWell(
+                                          borderRadius: BorderRadius.circular(12),
+                                          onTap: () {
+                                            context.go('/search?cuisine=${Uri.encodeComponent(type)}');
+                                          },
+                                          child: Column(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                  topLeft: Radius.circular(12),
+                                                  topRight: Radius.circular(12),
+                                                ),
+                                                child: Image.asset(
+                                                  'assets/images/types_cuisines_images/$imageName.jpg',
+                                                  height: 90,
+                                                  width: double.infinity,
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (context, error,
+                                                      stackTrace) {
+                                                    return Image.asset(
+                                                      'assets/images/types_cuisine_images/default.jpg',
+                                                      height: 90,
+                                                      width: double.infinity,
+                                                      fit: BoxFit.cover,
+                                                    );
+                                                  },
+                                                ),
                                               ),
-                                              child: Image.asset(
-                                                'assets/images/types_cuisines_images/$imageName.jpg',
-                                                height: 90,
-                                                width: double.infinity,
-                                                fit: BoxFit.cover,
-                                                errorBuilder: (context, error,
-                                                    stackTrace) {
-                                                  return Image.asset(
-                                                    'assets/images/types_cuisine_images/default.jpg',
-                                                    height: 90,
-                                                    width: double.infinity,
-                                                    fit: BoxFit.cover,
-                                                  );
-                                                },
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  type,
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
                                               ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text(
-                                                type,
-                                                textAlign: TextAlign.center,
-                                                style: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -397,7 +410,8 @@ class Home extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) => RestaurantDetailPage(restaurant: restaurant),
+                                      builder: (_) => RestaurantDetailPage(
+                                          restaurant: restaurant),
                                     ),
                                   );
                                 },

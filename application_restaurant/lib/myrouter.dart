@@ -36,15 +36,23 @@ final router = GoRouter(
       builder: (context, state) => ComptePage(),
     ),
     GoRoute(
-        name: "search",
-        path: "/search",
-        builder: (context, state) => SearchPage(),
-        routes: [
-          GoRoute(
-            name: "searchCategories",
-            path: "categories",
-            builder: (context, state) => SearchCategoriesPage(),
-          )
-        ]),
+      name: "search",
+      path: "/search",
+      builder: (context, state) {
+        final String? selectedType = state.uri.queryParameters['type'];
+        final String? selectedCuisine = state.uri.queryParameters['cuisine'];
+        return SearchPage(
+          initialType: selectedType,
+          initialCuisine: selectedCuisine,
+        );
+      },
+      routes: [
+        GoRoute(
+          name: "searchCategories",
+          path: "categories",
+          builder: (context, state) => SearchCategoriesPage(),
+        )
+      ],
+    ),
   ],
 );

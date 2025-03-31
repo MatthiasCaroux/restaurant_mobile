@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:sae_mobile/database/fetch_function.dart';
 import 'package:sae_mobile/views/bottom_navigation_bar.dart';
+import 'package:go_router/go_router.dart';
 import 'details/restaurant_detail_page.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+  final String? initialType;
+  final String? initialCuisine;
+
+  const SearchPage({
+    super.key,
+    this.initialType,
+    this.initialCuisine,
+  });
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -31,6 +39,16 @@ class _SearchPageState extends State<SearchPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    selectedType = widget.initialType;
+    selectedCuisine = widget.initialCuisine;
+    if (widget.initialType != null || widget.initialCuisine != null) {
+      showFilters = true;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Bottom_Navigation_Bar(
       currentIndex: 1, // 1 = Search
@@ -41,16 +59,16 @@ class _SearchPageState extends State<SearchPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
-              style: const TextStyle(color: Colors.white), // Texte en blanc
+              style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 hintText: 'Rechercher un restaurant...',
-                hintStyle: const TextStyle(
-                    color: Colors.white70), // Texte d'indice en blanc/gris
-                prefixIcon: const Icon(Icons.search,
-                    color: Colors.white), // Icône en blanc
+                hintStyle: const TextStyle(color: Colors.white70),
+                prefixIcon: const Icon(Icons.search, color: Colors.white),
                 suffixIcon: IconButton(
-                  icon: Icon(showFilters ? Icons.filter_list_off : Icons.filter_list, 
-                       color: Colors.white),
+                  icon: Icon(
+                    showFilters ? Icons.filter_list_off : Icons.filter_list,
+                    color: Colors.white,
+                  ),
                   onPressed: () {
                     setState(() {
                       showFilters = !showFilters;
@@ -58,10 +76,10 @@ class _SearchPageState extends State<SearchPage> {
                   },
                 ),
                 filled: true,
-                fillColor: Colors.black54, // Fond de la barre de recherche
+                fillColor: Colors.black54,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none, // Pas de bordure
+                  borderSide: BorderSide.none,
                 ),
               ),
               onChanged: (value) {
@@ -75,7 +93,7 @@ class _SearchPageState extends State<SearchPage> {
           // Zone de filtres
           AnimatedContainer(
             duration: const Duration(milliseconds: 300),
-            height: showFilters ? 210 : 0, // Augmenté pour le nouveau filtre
+            height: showFilters ? 210 : 0,
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Card(
               child: Padding(
@@ -137,7 +155,6 @@ class _SearchPageState extends State<SearchPage> {
                           );
                         }
 
-                        // Construction de la liste pour le dropdown avec "Tous" en option par défaut
                         List<DropdownMenuItem<String>> cuisineItems = [
                           const DropdownMenuItem<String>(
                             value: null,
@@ -145,7 +162,6 @@ class _SearchPageState extends State<SearchPage> {
                           )
                         ];
 
-                        // Ajout des types de cuisine depuis la BD
                         cuisineSnapshot.data!.forEach((cuisine) {
                           String cuisineType = cuisine['nom_type_cuisine'] ?? '';
                           if (cuisineType.isNotEmpty) {
@@ -240,35 +256,28 @@ class _SearchPageState extends State<SearchPage> {
                 }
 
                 final restaurantList = snapshot.data!;
+                
                 filteredRestaurants = restaurantList.where((restaurant) {
+                  final String restaurantType = (restaurant['type_restaurant'] ?? '').toString().toLowerCase();
                   final name = (restaurant['nom_restaurant'] ?? '')
                       .toString()
                       .toLowerCase();
-                  final type = (restaurant['type'] ?? '').toString().toLowerCase();
+                  final type = restaurantType;
                   final cuisine = (restaurant['cuisine'] ?? '').toString();
                   
-                  // Traitement de vegetarian qui est un booléen (TRUE, FALSE ou NULL)
                   final vegetarianValue = restaurant['vegetarian'];
                   final bool isVegetarianRestaurant = 
                       vegetarianValue is String ? 
                       vegetarianValue.toUpperCase() == 'TRUE' : 
                       vegetarianValue == true;
                   
-                  // Traitement de wheelchair qui est un texte ('yes', 'limited', 'no', ou NULL)
                   final wheelchairValue = (restaurant['wheelchair'] ?? '').toString().toLowerCase();
                   final bool hasPMRAccess = 
                       wheelchairValue == 'yes' || wheelchairValue == 'limited';
 
-                  // Filtrage par nom
                   bool matchesName = name.contains(searchQuery);
-                  
-                  // Filtrage par type d'établissement
-                  bool matchesType = selectedType == null || type == selectedType;
-                  
-                  // Filtrage par type de cuisine
+                  bool matchesType = selectedType == null || type == selectedType?.toLowerCase();
                   bool matchesCuisine = selectedCuisine == null || cuisine == selectedCuisine;
-                  
-                  // Filtrage par options
                   bool matchesVegetarian = !isVegetarian || isVegetarianRestaurant;
                   bool matchesPMR = !isPMR || hasPMRAccess;
 
@@ -292,19 +301,18 @@ class _SearchPageState extends State<SearchPage> {
                                   .replaceAll('-', '_')
                                   .replaceAll(RegExp(r'[^a-z0-9_]'), '');
                           
-                          // Vérification du statut végétarien
+                          final String restaurantType = (restaurant['type_restaurant'] ?? '').toString();
+                          
                           final vegetarianValue = restaurant['vegetarian'];
                           final bool isVegetarianRestaurant = 
                               vegetarianValue is String ? 
                               vegetarianValue.toUpperCase() == 'TRUE' : 
                               vegetarianValue == true;
                           
-                          // Vérification du statut PMR
                           final wheelchairValue = (restaurant['wheelchair'] ?? '').toString().toLowerCase();
                           final bool hasFullPMRAccess = wheelchairValue == 'yes';
                           final bool hasLimitedPMRAccess = wheelchairValue == 'limited';
 
-                          // Récupération du type de cuisine pour l'affichage
                           final cuisineType = restaurant['cuisine'] != null && 
                                              restaurant['cuisine'].toString().isNotEmpty ?
                                              restaurant['cuisine'].toString() : '';
@@ -360,7 +368,7 @@ class _SearchPageState extends State<SearchPage> {
                                             ),
                                             const SizedBox(height: 4),
                                             Text(
-                                              'Type : ${getFormattedType(restaurant['type'] ?? '')}',
+                                              'Type : ${getFormattedType(restaurantType)}',
                                               style: const TextStyle(
                                                 fontSize: 13,
                                                 color: Colors.grey,
@@ -429,7 +437,6 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
   
-  // Fonction pour formater le type d'établissement
   String getFormattedType(String type) {
     switch(type.toLowerCase()) {
       case 'restaurant':
