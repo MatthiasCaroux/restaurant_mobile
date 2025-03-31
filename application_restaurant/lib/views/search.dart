@@ -14,11 +14,12 @@ class _SearchPageState extends State<SearchPage> {
   String searchQuery = '';
   List<Map<String, dynamic>> filteredRestaurants = [];
   String? selectedType;
+  String? selectedCuisine;
   bool isVegetarian = false;
   bool isPMR = false;
   bool showFilters = false;
 
-  // Liste des types de restaurants mise à jour
+  // Liste des types de restaurants
   List<String> restaurantTypes = [
     'Tous', 
     'restaurant', 
@@ -35,6 +36,7 @@ class _SearchPageState extends State<SearchPage> {
       currentIndex: 1, // 1 = Search
       child: Column(
         children: [
+          const SizedBox(height: 25),
           // Barre de recherche
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -73,7 +75,7 @@ class _SearchPageState extends State<SearchPage> {
           // Zone de filtres
           AnimatedContainer(
             duration: const Duration(milliseconds: 300),
-            height: showFilters ? 130 : 0,
+            height: showFilters ? 210 : 0, // Augmenté pour le nouveau filtre
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Card(
               child: Padding(
@@ -108,7 +110,72 @@ class _SearchPageState extends State<SearchPage> {
                               ))
                           .toList(),
                     ),
+                    
                     const SizedBox(height: 10),
+                    
+                    // Menu déroulant pour le type de cuisine
+                    FutureBuilder<List<Map<String, dynamic>>>(
+                      future: FetchFunction.fetchTypeCuisine(),
+                      builder: (context, cuisineSnapshot) {
+                        if (cuisineSnapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(
+                            child: SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          );
+                        } else if (cuisineSnapshot.hasError) {
+                          return Text(
+                            'Erreur : ${cuisineSnapshot.error}',
+                            style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+                          );
+                        } else if (!cuisineSnapshot.hasData || cuisineSnapshot.data!.isEmpty) {
+                          return const Text(
+                            "Aucun type de cuisine trouvé.",
+                            style: TextStyle(color: Colors.orangeAccent, fontSize: 12),
+                          );
+                        }
+
+                        // Construction de la liste pour le dropdown avec "Tous" en option par défaut
+                        List<DropdownMenuItem<String>> cuisineItems = [
+                          const DropdownMenuItem<String>(
+                            value: null,
+                            child: Text('Tous'),
+                          )
+                        ];
+
+                        // Ajout des types de cuisine depuis la BD
+                        cuisineSnapshot.data!.forEach((cuisine) {
+                          String cuisineType = cuisine['nom_type_cuisine'] ?? '';
+                          if (cuisineType.isNotEmpty) {
+                            cuisineItems.add(DropdownMenuItem<String>(
+                              value: cuisineType,
+                              child: Text(cuisineType),
+                            ));
+                          }
+                        });
+
+                        return DropdownButtonFormField<String>(
+                          decoration: const InputDecoration(
+                            labelText: 'Type de cuisine',
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          ),
+                          value: selectedCuisine,
+                          hint: const Text('Sélectionnez un type de cuisine'),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedCuisine = value;
+                            });
+                          },
+                          items: cuisineItems,
+                        );
+                      },
+                    ),
+                    
+                    const SizedBox(height: 10),
+                    
                     // Cases à cocher
                     Row(
                       children: [
@@ -178,6 +245,7 @@ class _SearchPageState extends State<SearchPage> {
                       .toString()
                       .toLowerCase();
                   final type = (restaurant['type'] ?? '').toString().toLowerCase();
+                  final cuisine = (restaurant['cuisine'] ?? '').toString();
                   
                   // Traitement de vegetarian qui est un booléen (TRUE, FALSE ou NULL)
                   final vegetarianValue = restaurant['vegetarian'];
@@ -194,14 +262,17 @@ class _SearchPageState extends State<SearchPage> {
                   // Filtrage par nom
                   bool matchesName = name.contains(searchQuery);
                   
-                  // Filtrage par type
+                  // Filtrage par type d'établissement
                   bool matchesType = selectedType == null || type == selectedType;
+                  
+                  // Filtrage par type de cuisine
+                  bool matchesCuisine = selectedCuisine == null || cuisine == selectedCuisine;
                   
                   // Filtrage par options
                   bool matchesVegetarian = !isVegetarian || isVegetarianRestaurant;
                   bool matchesPMR = !isPMR || hasPMRAccess;
 
-                  return matchesName && matchesType && matchesVegetarian && matchesPMR;
+                  return matchesName && matchesType && matchesCuisine && matchesVegetarian && matchesPMR;
                 }).toList();
 
                 return filteredRestaurants.isEmpty
@@ -232,6 +303,11 @@ class _SearchPageState extends State<SearchPage> {
                           final wheelchairValue = (restaurant['wheelchair'] ?? '').toString().toLowerCase();
                           final bool hasFullPMRAccess = wheelchairValue == 'yes';
                           final bool hasLimitedPMRAccess = wheelchairValue == 'limited';
+
+                          // Récupération du type de cuisine pour l'affichage
+                          final cuisineType = restaurant['cuisine'] != null && 
+                                             restaurant['cuisine'].toString().isNotEmpty ?
+                                             restaurant['cuisine'].toString() : '';
 
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -270,8 +346,7 @@ class _SearchPageState extends State<SearchPage> {
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 12.0, horizontal: 4.0),
                                         child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Text(
@@ -283,14 +358,23 @@ class _SearchPageState extends State<SearchPage> {
                                               ),
                                               overflow: TextOverflow.ellipsis,
                                             ),
-                                            const SizedBox(height: 6),
+                                            const SizedBox(height: 4),
                                             Text(
                                               'Type : ${getFormattedType(restaurant['type'] ?? '')}',
                                               style: const TextStyle(
-                                                fontSize: 14,
+                                                fontSize: 13,
                                                 color: Colors.grey,
                                               ),
                                             ),
+                                            if (cuisineType.isNotEmpty)
+                                              Text(
+                                                'Cuisine : $cuisineType',
+                                                style: const TextStyle(
+                                                  fontSize: 13,
+                                                  color: Colors.grey,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
                                             const SizedBox(height: 4),
                                             Row(
                                               children: [
