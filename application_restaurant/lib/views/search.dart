@@ -24,18 +24,16 @@ class _SearchPageState extends State<SearchPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
-              style: const TextStyle(color: Colors.white), // Texte en blanc
+              style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 hintText: 'Rechercher un restaurant...',
-                hintStyle: const TextStyle(
-                    color: Colors.white70), // Texte d'indice en blanc/gris
-                prefixIcon: const Icon(Icons.search,
-                    color: Colors.white), // Icône en blanc
+                hintStyle: const TextStyle(color: Colors.white70),
+                prefixIcon: const Icon(Icons.search, color: Colors.white),
                 filled: true,
-                fillColor: Colors.black54, // Fond de la barre de recherche
+                fillColor: Colors.black54,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none, // Pas de bordure
+                  borderSide: BorderSide.none,
                 ),
               ),
               onChanged: (value) {
