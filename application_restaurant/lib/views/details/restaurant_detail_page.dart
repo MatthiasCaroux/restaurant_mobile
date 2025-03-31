@@ -52,7 +52,7 @@ class RestaurantDetailPage extends StatelessWidget {
               departement: restaurant['departement'] ?? '',
             ),
             const SizedBox(height: 16),
-            RestaurantAvisSection(idRestaurant: restaurant['id_restaurant']),
+            RestaurantAvisSection(idRestaurant: restaurant['id_restaurant'], ),
             const SizedBox(height: 30),
           ],
         ),

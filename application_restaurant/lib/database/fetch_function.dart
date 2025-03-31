@@ -74,4 +74,30 @@ class FetchFunction {
           'Erreur lors de la récupération des types de cuisine : $e');
     }
   }
+  static Future<int> fetchLastAvisId() async {
+    try {
+      final response = await Supabase.instance.client
+          .from('Avis')
+          .select('id')
+          .order('id', ascending: false)
+          .limit(1)
+          .single();
+      return response['id'] as int;
+    } catch (e) {
+      throw Exception('Erreur lors de la récupération de l\'ID max : $e');
+    }
+  }
+  static Future<Map<String, dynamic>> fetchUtilisateurByEmail(String username) async {
+    try {
+      final response = await Supabase.instance.client
+          .from('Utilisateur')
+          .select()
+          .eq('username', username)
+          .single();
+      return Map<String, dynamic>.from(response);
+    } catch (e) {
+      throw Exception(
+          'Erreur lors de la récupération de l\'utilisateur : $e');
+    }
+  }
 }
