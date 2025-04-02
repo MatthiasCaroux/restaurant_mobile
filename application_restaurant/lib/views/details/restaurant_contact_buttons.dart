@@ -4,12 +4,14 @@ class RestaurantContactButtons extends StatelessWidget {
   final String telephone;
   final String type;
   final String departement;
+  final String opening_hours;
 
   const RestaurantContactButtons({
     super.key,
     required this.telephone,
     required this.type,
     required this.departement,
+    required this.opening_hours
   });
 
   @override
@@ -21,19 +23,24 @@ class RestaurantContactButtons extends StatelessWidget {
         runSpacing: 12,
         children: [
           _buildButton(Icons.call, telephone),
-            _buildButton(
+          _buildButton(
             type == 'restaurant'
-              ? Icons.restaurant
+                ? Icons.restaurant
                 : type == 'bar'
                 ? Icons.local_bar
                 : type == 'pub'
-                ? Icons.local_bar
-                : type == 'ice cream'
-                  ? Icons.icecream
-                  : Icons.help,
+                ? Icons.sports_bar_rounded
+                : type == 'ice_cream'
+                ? Icons.icecream
+                : type == "fast_food"
+                ? Icons.fastfood
+                : type == "cafe"
+                ? Icons.coffee
+                : Icons.help,
             type,
-            ),
+          ),
           _buildButton(Icons.map, departement),
+          _buildOpeningHoursSection(Icons.access_time, opening_hours),
         ],
       ),
     );
@@ -48,6 +55,18 @@ class RestaurantContactButtons extends StatelessWidget {
       onPressed: () {},
       icon: Icon(icon, size: 20),
       label: Text(label),
+    );
+  }
+
+  Widget _buildOpeningHoursSection(IconData icon, String openingHours) {
+    return ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      ),
+      onPressed: () {},
+      icon: Icon(icon, size: 20),
+      label: Text(openingHours),
     );
   }
 }
