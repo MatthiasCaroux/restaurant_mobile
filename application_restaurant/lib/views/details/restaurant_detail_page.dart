@@ -50,6 +50,8 @@ class RestaurantDetailPage extends StatelessWidget {
               telephone: restaurant['telephone_restaurant'] ?? '',
               type: restaurant['type_restaurant'] ?? '',
               departement: restaurant['departement'] ?? '',
+              openingHours: restaurant["opening_hours"] ?? '',
+              webSite: restaurant["site_restaurant"]?? '',
             ),
             const SizedBox(height: 16),
             RestaurantAvisSection(idRestaurant: restaurant['id_restaurant']),
