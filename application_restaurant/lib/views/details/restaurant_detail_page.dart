@@ -3,6 +3,7 @@ import 'restaurant_header.dart';
 import 'restaurant_map_section.dart';
 import 'restaurant_contact_buttons.dart';
 import 'restaurant_avis_section.dart';
+import '../../database/insert_function.dart';
 
 class RestaurantDetailPage extends StatefulWidget {
   final Map<String, dynamic> restaurant;
@@ -14,14 +15,50 @@ class RestaurantDetailPage extends StatefulWidget {
 }
 
 class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
-  bool isFavorite = false; // à améliorer ensuite selon stockage
+  bool isFavorite = false;
 
-  void toggleFavorite() {
+  @override
+  void initState() {
+    super.initState();
+    _loadFavoriteStatus();
+  }
+
+  void _loadFavoriteStatus() async {
+    final idUtilisateur = 1; // À remplacer plus tard par l'utilisateur connecté
+    final idRestaurant = widget.restaurant['id_restaurant'];
+
+    try {
+      final favori = await InsertFunction.isRestaurantFavori(
+        idUtilisateur: idUtilisateur,
+        idRestaurant: idRestaurant,
+      );
+
+      setState(() {
+        isFavorite = favori;
+      });
+    } catch (e) {
+      print('Erreur lors du chargement des favoris : $e');
+    }
+  }
+
+  void toggleFavorite() async {
+    final idUtilisateur = 1;
+    final idRestaurant = widget.restaurant['id_restaurant'];
+
     setState(() {
       isFavorite = !isFavorite;
     });
 
-    // Ici tu peux ensuite stocker dans la DB ou en local selon Supabase / SharedPrefs
+    try {
+      await InsertFunction.toggleFavori(
+        idUtilisateur: idUtilisateur,
+        idRestaurant: idRestaurant,
+        isFavorite: isFavorite,
+      );
+    } catch (e) {
+      print("Erreur favoris : $e");
+    }
+
     print(
         '${widget.restaurant['nom_restaurant']} est ${isFavorite ? 'ajouté' : 'retiré'} des favoris');
   }
