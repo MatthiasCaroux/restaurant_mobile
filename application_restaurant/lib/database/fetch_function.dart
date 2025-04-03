@@ -61,6 +61,27 @@ class FetchFunction {
       throw Exception('Erreur lors de la récupération des catégories : $e');
     }
   }
+  static Future<List<Map<String, dynamic>>> fetchAvisParRestaurant(int idRestaurant) async {
+  final response = await Supabase.instance.client
+      .from('Deposer')
+      .select('id_Avis')
+      .eq('id_Restaurant', idRestaurant);
+
+  if (response is List && response.isNotEmpty) {
+    List<int> idsAvis = response.map((item) => item['id_Avis'] as int).toList();
+
+    // Récupération des avis en fonction des IDs trouvés
+    final avisResponse = await Supabase.instance.client
+        .from('Avis')
+        .select('id, note, text')
+        .contains('id', idsAvis);
+
+    return avisResponse as List<Map<String, dynamic>>;
+  }
+
+  return [];
+}
+
 
   static Future<List<Map<String, dynamic>>> fetchNomTypeCuisineById(id) async {
     try {
@@ -87,17 +108,29 @@ class FetchFunction {
       throw Exception('Erreur lors de la récupération de l\'ID max : $e');
     }
   }
-  static Future<Map<String, dynamic>> fetchUtilisateurByEmail(String username) async {
-    try {
-      final response = await Supabase.instance.client
-          .from('Utilisateur')
-          .select()
-          .eq('username', username)
-          .single();
-      return Map<String, dynamic>.from(response);
-    } catch (e) {
-      throw Exception(
-          'Erreur lors de la récupération de l\'utilisateur : $e');
-    }
+  static Future<Map<String, dynamic>?> fetchUtilisateurByEmail(String username) async {
+  if (username.isEmpty) {
+    print("fetchUtilisateurByEmail : username est vide !");
+    return null;
   }
+
+  try {
+    final response = await Supabase.instance.client
+        .from('Utilisateur')
+        .select()
+        .eq('username', username)
+        .maybeSingle(); // Utilisation de maybeSingle() pour éviter les erreurs
+
+    if (response == null) {
+      print("Aucun utilisateur trouvé avec le username : $username");
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response);
+  } catch (e) {
+    print("Erreur lors de la récupération de l'utilisateur : $e");
+    return null; // On retourne null pour éviter de crasher l'application
+  }
+}
+
 }
