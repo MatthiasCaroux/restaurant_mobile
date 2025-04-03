@@ -4,6 +4,8 @@ import 'package:sae_mobile/views/bottom_navigation_bar.dart';
 import 'package:go_router/go_router.dart';
 
 import 'details/restaurant_detail_page.dart';
+import 'search.dart';
+import 'restaurant_map_home.dart'; // Import de la carte
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -21,7 +23,7 @@ class Home extends StatelessWidget {
             return Center(
               child: Text(
                 'Erreur lors du chargement des restaurants : ${snapshot.error}',
-                style: TextStyle(color: Colors.redAccent),
+                style: const TextStyle(color: Colors.redAccent),
               ),
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -33,277 +35,289 @@ class Home extends StatelessWidget {
             );
           }
 
-            final restaurantList = snapshot.data!;
-            return CustomScrollView(
+          final restaurantList = snapshot.data!;
+          return CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 25),
-                child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header profil
-                  Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.grey[300],
-                    ),
-                    child: Icon(
-                      Icons.person,
-                      color: Colors.grey[700],
-                      size: 50,
-                    ),
-                    ),
-                    const SizedBox(width: 15),
-                    Column(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 10, top: 25),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                      "Bonjour",
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                      // Header profil
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 100,
+                            height: 100,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.grey[300],
+                            ),
+                            child: Icon(
+                              Icons.person,
+                              color: Colors.grey[700],
+                              size: 50,
+                            ),
+                          ),
+                          const SizedBox(width: 15),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Bonjour",
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                "On mange où aujourd'hui ?",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      ),
-                      Text(
-                      "On mange où aujourd'hui ?",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
-                      ),
-                    ],
-                    ),
-                  ],
-                  ),
-                  const SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
                       ElevatedButton(
                         onPressed: () => context.go('/database'),
                         child: const Text('Database'),
                       ),
-
-                      const Padding(
-                        padding: EdgeInsets.only(top: 20.0),
-                        child: Text(
-                          "Catégories",
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-
-                      FutureBuilder<List<Map<String, dynamic>>>(
-                        future: FetchFunction.fetchCategorie(),
-                        builder: (context, categorieSnapshot) {
-                          if (categorieSnapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          } else if (categorieSnapshot.hasError) {
-                            return Center(
-                              child: Text(
-                                'Erreur lors du chargement des catégories : ${categorieSnapshot.error}',
-                                style: TextStyle(color: Colors.redAccent),
-                              ),
-                            );
-                          } else if (!categorieSnapshot.hasData ||
-                              categorieSnapshot.data!.isEmpty) {
-                            return const Text(
-                              "Aucune catégorie trouvée.",
-                              style: TextStyle(color: Colors.orangeAccent),
-                            );
-                          }
-
-                          final categorieList = categorieSnapshot.data!;
-
-                          return SizedBox(
-                            height: 160,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: categorieList.length,
-                              itemBuilder: (context, index) {
-                                final typeCat = categorieList[index]
-                                        ['type_restaurant'] ??
-                                    'inconnu';
-
-                                final imageName = typeCat
-                                    .toString()
-                                    .toLowerCase()
-                                    .replaceAll(' ', '_')
-                                    .replaceAll('-', '_')
-                                    .replaceAll(RegExp(r'[^a-z0-9_]'), '');
-
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: SizedBox(
-                                    width: 140,
-                                    child: Card(
-                                      elevation: 4,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius:
-                                                const BorderRadius.only(
-                                              topLeft: Radius.circular(12),
-                                              topRight: Radius.circular(12),
-                                            ),
-                                            child: Image.asset(
-                                              'images/categories_images/$imageName.jpg',
-                                              height: 90,
-                                              width: double.infinity,
-                                              fit: BoxFit.cover,
-                                              errorBuilder:
-                                                  (context, error, stackTrace) {
-                                                return Container(
-                                                  height: 90,
-                                                  width: double.infinity,
-                                                  color: Colors.grey,
-                                                  child: const Icon(Icons
-                                                      .image_not_supported),
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              typeCat,
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          );
-                        },
-                      ),
-
-                      // --- TYPES DE CUISINE ---
-                      const Padding(
-                        padding: EdgeInsets.only(top: 30.0),
-                        child: Text(
-                          "Type de cuisine",
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      FutureBuilder<List<Map<String, dynamic>>>(
-                        future: FetchFunction.fetchTypeCuisine(),
-                        builder: (context, typeSnapshot) {
-                          if (typeSnapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          } else if (typeSnapshot.hasError) {
-                            return Center(
-                              child: Text(
-                                'Erreur lors du chargement des types de cuisine : ${typeSnapshot.error}',
-                                style: TextStyle(color: Colors.redAccent),
-                              ),
-                            );
-                          } else if (!typeSnapshot.hasData ||
-                              typeSnapshot.data!.isEmpty) {
-                            return const Text(
-                              "Aucun type de cuisine trouvé.",
-                              style: TextStyle(color: Colors.orangeAccent),
-                            );
-                          }
-
-                          final typeList = typeSnapshot.data!;
-                          return SizedBox(
-                            height: 160,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: typeList.map((typeCuisine) {
-                                  final type =
-                                      typeCuisine['nom_type_cuisine'] ??
-                                          'inconnu';
-
-                                  final imageName = type
-                                      .toString()
-                                      .toLowerCase()
-                                      .replaceAll(' ', '_')
-                                      .replaceAll('-', '_')
-                                      .replaceAll(RegExp(r'[^a-z0-9_]'), '');
-
-                                  return Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: SizedBox(
-                                      width: 140,
-                                      child: Card(
-                                        elevation: 4,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  const BorderRadius.only(
-                                                topLeft: Radius.circular(12),
-                                                topRight: Radius.circular(12),
-                                              ),
-                                              child: Image.asset(
-                                                'assets/images/types_cuisines_images/$imageName.jpg',
-                                                height: 90,
-                                                width: double.infinity,
-                                                fit: BoxFit.cover,
-                                                errorBuilder: (context, error,
-                                                    stackTrace) {
-                                                  return Image.asset(
-                                                    'assets/images/types_cuisine_images/default.jpg',
-                                                    height: 90,
-                                                    width: double.infinity,
-                                                    fit: BoxFit.cover,
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text(
-                                                type,
-                                                textAlign: TextAlign.center,
-                                                style: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
                     ],
                   ),
                 ),
               ),
+              
+              // Map section with all restaurant locations
+              RestaurantMapHome(restaurants: restaurantList),
+              
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                  child: Text(
+                    "Catégories",
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
+                ),
+              ),
+              
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: FutureBuilder<List<Map<String, dynamic>>>(
+                    future: FetchFunction.fetchCategorie(),
+                    builder: (context, categorieSnapshot) {
+                      if (categorieSnapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (categorieSnapshot.hasError) {
+                        return Center(
+                          child: Text(
+                            'Erreur lors du chargement des catégories : ${categorieSnapshot.error}',
+                            style: const TextStyle(color: Colors.redAccent),
+                          ),
+                        );
+                      } else if (!categorieSnapshot.hasData || categorieSnapshot.data!.isEmpty) {
+                        return const Text(
+                          "Aucune catégorie trouvée.",
+                          style: TextStyle(color: Colors.orangeAccent),
+                        );
+                      }
 
+                      final categorieList = categorieSnapshot.data!;
+
+                      return SizedBox(
+                        height: 160,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: categorieList.length,
+                          itemBuilder: (context, index) {
+                            final typeCat = categorieList[index]['type_restaurant'] ?? 'inconnu';
+
+                            final imageName = typeCat
+                                .toString()
+                                .toLowerCase()
+                                .replaceAll(' ', '_')
+                                .replaceAll('-', '_')
+                                .replaceAll(RegExp('[^a-z0-9_]'), '');
+
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: SizedBox(
+                                width: 140,
+                                child: Card(
+                                  elevation: 4,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(12),
+                                    onTap: () {
+                                      context.go('/search?type=${Uri.encodeComponent(typeCat)}');
+                                    },
+                                    child: Column(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(12),
+                                            topRight: Radius.circular(12),
+                                          ),
+                                          child: Image.asset(
+                                            'images/categories_images/$imageName.jpg',
+                                            height: 90,
+                                            width: double.infinity,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              return Container(
+                                                height: 90,
+                                                width: double.infinity,
+                                                color: Colors.grey,
+                                                child: const Icon(Icons.image_not_supported),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            typeCat,
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+
+              // Type de cuisine section
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 10, top: 30, bottom: 10),
+                  child: Text(
+                    "Type de cuisine",
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
+                ),
+              ),
+              
+              // Type de cuisine builder
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: FutureBuilder<List<Map<String, dynamic>>>(
+                    future: FetchFunction.fetchTypeCuisine(),
+                    builder: (context, typeSnapshot) {
+                      if (typeSnapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (typeSnapshot.hasError) {
+                        return Center(
+                          child: Text(
+                            'Erreur lors du chargement des types de cuisine : ${typeSnapshot.error}',
+                            style: const TextStyle(color: Colors.redAccent),
+                          ),
+                        );
+                      } else if (!typeSnapshot.hasData || typeSnapshot.data!.isEmpty) {
+                        return const Text(
+                          "Aucun type de cuisine trouvé.",
+                          style: TextStyle(color: Colors.orangeAccent),
+                        );
+                      }
+
+                      final typeList = typeSnapshot.data!;
+                      return SizedBox(
+                        height: 160,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: typeList.length,
+                          itemBuilder: (context, index) {
+                            final typeCuisine = typeList[index];
+                            final type = typeCuisine['nom_type_cuisine'] ?? 'inconnu';
+                            
+                            final imageName = type
+                                .toString()
+                                .toLowerCase()
+                                .replaceAll(' ', '_')
+                                .replaceAll('-', '_')
+                                .replaceAll(RegExp('[^a-z0-9_]'), '');
+
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: SizedBox(
+                                width: 140,
+                                child: Card(
+                                  elevation: 4,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(12),
+                                    onTap: () {
+                                      context.go('/search?cuisine=${Uri.encodeComponent(type)}');
+                                    },
+                                    child: Column(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(12),
+                                            topRight: Radius.circular(12),
+                                          ),
+                                          child: Image.asset(
+                                            'assets/images/types_cuisines_images/$imageName.jpg',
+                                            height: 90,
+                                            width: double.infinity,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              return Image.asset(
+                                                'assets/images/types_cuisine_images/default.jpg',
+                                                height: 90,
+                                                width: double.infinity,
+                                                fit: BoxFit.cover,
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            type,
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10, top: 30, bottom: 10),
@@ -317,7 +331,8 @@ class Home extends StatelessWidget {
                   ),
                 ),
               ),
-              // --- LISTE DES RESTAURANTS ---
+              
+              // Restaurant list section
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
@@ -328,7 +343,7 @@ class Home extends StatelessWidget {
                             .toLowerCase()
                             .replaceAll(' ', '_')
                             .replaceAll('-', '_')
-                            .replaceAll(RegExp(r'[^a-z0-9_]'), '');
+                            .replaceAll(RegExp('[^a-z0-9_]'), '');
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Card(
@@ -366,13 +381,11 @@ class Home extends StatelessWidget {
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 12.0, horizontal: 4.0),
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        restaurant['nom_restaurant'] ??
-                                            'Nom inconnu',
+                                        restaurant['nom_restaurant'] ?? 'Nom inconnu',
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
@@ -381,7 +394,7 @@ class Home extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 6),
                                       Text(
-                                        'Type : ${restaurant['type'] ?? 'Non renseigné'}',
+                                        'Type : ${_getFormattedType(restaurant['type_restaurant'] ?? '')}',
                                         style: const TextStyle(
                                           fontSize: 14,
                                           color: Colors.grey,
@@ -416,5 +429,26 @@ class Home extends StatelessWidget {
         },
       ),
     );
+  }
+
+  String _getFormattedType(String type) {
+    switch(type.toLowerCase()) {
+      case 'restaurant':
+        return 'Restaurant';
+      case 'bar':
+        return 'Bar';
+      case 'cafe':
+        return 'Café';
+      case 'fast_food':
+        return 'Fast-food';
+      case 'ice_cream':
+        return 'Glacier';
+      case 'pub':
+        return 'Pub';
+      default:
+        return type.isNotEmpty ? 
+               type[0].toUpperCase() + type.substring(1).replaceAll('_', ' ') : 
+               'Non renseigné';
+    }
   }
 }
