@@ -74,4 +74,32 @@ class FetchFunction {
           'Erreur lors de la récupération des types de cuisine : $e');
     }
   }
+
+  static Future<List<Map<String, dynamic>>> fetchFavoriteRestaurants() async {
+    final supabase = Supabase.instance.client;
+    final idUtilisateur = 1; // à rendre dynamique plus tard
+
+    try {
+      final response = await supabase
+          .from('Appreciation')
+          .select('id_restaurant')
+          .eq('id_utilisateur', idUtilisateur)
+          .eq('Favoris', true);
+
+      final ids = response.map((e) => e['id_restaurant']).toList();
+
+      if (ids.isEmpty) return [];
+
+      final idsString = '(${ids.join(',')})';
+
+      final restaurants = await supabase
+          .from('Restaurant')
+          .select()
+          .filter('id_restaurant', 'in', idsString);
+
+      return List<Map<String, dynamic>>.from(restaurants);
+    } catch (e) {
+      throw Exception('Erreur lors de la récupération des favoris : $e');
+    }
+  }
 }
