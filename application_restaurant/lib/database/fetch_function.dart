@@ -70,17 +70,20 @@ class FetchFunction {
   if (response is List && response.isNotEmpty) {
     List<int> idsAvis = response.map((item) => item['id_Avis'] as int).toList();
 
-    // Récupération des avis en fonction des IDs trouvés
+    // Construction de la requête avec plusieurs conditions "OR" (eq) pour simuler "IN"
     final avisResponse = await Supabase.instance.client
         .from('Avis')
-        .select('id, note, text')
-        .contains('id', idsAvis);
+        .select('id, note, text, Titre')
+        .or(idsAvis.map((id) => 'id.eq.$id').join(','));
 
     return avisResponse as List<Map<String, dynamic>>;
   }
 
   return [];
 }
+
+
+
 
 
   static Future<List<Map<String, dynamic>>> fetchNomTypeCuisineById(id) async {
