@@ -46,7 +46,7 @@ class _ComptePageState extends State<ComptePage> {
         if (!mounted) return;
         if (response.user != null) {
           setState(() {
-        _error = "Un email de confirmation a été envoyé à votre adresse.";
+            _error = "Un email de confirmation a été envoyé à votre adresse.";
           });
         }
       }
@@ -56,7 +56,6 @@ class _ComptePageState extends State<ComptePage> {
       setState(() => _loading = false);
     }
   }
-
 
   Future<void> _logout() async {
     await Supabase.instance.client.auth.signOut();
@@ -102,7 +101,7 @@ class _ComptePageState extends State<ComptePage> {
                     fillColor: Colors.white,
                   ),
                   validator: (value) =>
-                  value == null || value.isEmpty ? "Entrez un email" : null,
+                      value == null || value.isEmpty ? "Entrez un email" : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
