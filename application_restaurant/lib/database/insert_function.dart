@@ -1,52 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 class InsertFunction {
+  static final supabase = Supabase.instance.client;
+
   static Future<void> insertAvis({
-  required String text,
-  required int note,
-  required String titre,
-}) async {
-  final supabase = Supabase.instance.client;
-  final response = await supabase.from('Avis').insert({
-    'text': text,
-    'note': note,
-    'Titre': titre,
-  });
+    required String text,
+    required int note,
+    required String titre,
+  }) async {
+    try {
+      final response = await supabase.from('Avis').insert({
+        'text': text,
+        'note': note,
+        'Titre': titre, 
+      }).select(); 
 
-  if (response is PostgrestException) { // Vérification correcte
-    throw Exception("Erreur lors de l'insertion: ${response.message}");
-  }
-}
-
-  static Future<void> insertUtilisateur(
-    String Utilisateur,
-    String password,
-  )
-  async {
-    final supabase = Supabase.instance.client;
-    final response = await supabase.from('Utilisateur').insert({
-      'username': Utilisateur,
-      'password': password,
-    });
-
-    if (response.error != null) {
-      throw Exception("Erreur lors de l'insertion: ${response.error!.message}");
+      print(" Avis inséré avec succès: $response");
+    } catch (e) {
+      print(" Erreur lors de l'insertion de l'avis: $e");
+      throw Exception("Erreur lors de l'insertion de l'avis: $e");
     }
   }
+
+  /// Insère un utilisateur dans la table `Utilisateur`
+  static Future<void> insertUtilisateur(
+    String utilisateur,
+    String password,
+  ) async {
+    try {
+      final response = await supabase.from('Utilisateur').insert({
+        'username': utilisateur,
+        'password': password,
+      }).select();
+
+      print(" Utilisateur inséré avec succès: $response");
+    } catch (e) {
+      print(" Erreur lors de l'insertion de l'utilisateur: $e");
+      throw Exception("Erreur lors de l'insertion de l'utilisateur: $e");
+    }
+  }
+
+  /// Insère une relation `Deposer` entre un utilisateur, un restaurant et un avis
   static Future<void> insertDeposer(
     int idUtilisateur,
     int idRestaurant,
     int idAvis,
   ) async {
-    final supabase = Supabase.instance.client;
-    final response = await supabase.from('Deposer').insert({
-      'id_utilisateur': idUtilisateur,
-      'id_restaurant': idRestaurant,
-      'id_avis': idAvis,
-    });
+    try {
+      final response = await supabase.from('Deposer').insert({
+        'id_Utilisateur': idUtilisateur,
+        'id_Restaurant': idRestaurant,
+        'id_Avis': idAvis,
+      }).select();
 
-    if (response.error != null) {
-      throw Exception("Erreur lors de l'insertion: ${response.error!.message}");
+      print(" Dépôt inséré avec succès: $response");
+    } catch (e) {
+      print(" Erreur lors de l'insertion du dépôt: $e");
+      throw Exception("Erreur lors de l'insertion du dépôt: $e");
     }
   }
 }

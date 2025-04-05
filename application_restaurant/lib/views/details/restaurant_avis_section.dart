@@ -21,11 +21,6 @@ class _RestaurantAvisSectionState extends State<RestaurantAvisSection> {
 
   Future<void> _submitAvis() async {
     final user = supabase.auth.currentUser;
-    final user_id = await FetchFunction.fetchUtilisateurByEmail(
-      supabase.auth.currentUser?.email ?? ''
-    );
-    print(user_id);
-
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Utilisateur non connecté.')),
@@ -33,15 +28,30 @@ class _RestaurantAvisSectionState extends State<RestaurantAvisSection> {
       return;
     }
 
+    // Récupération de l'ID utilisateur
+    final userData = await FetchFunction.fetchUtilisateurByEmail(user.email ?? '');
+    final user_id = userData?['id']; 
+
+    if (user_id == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erreur : Utilisateur non trouvé.')),
+      );
+      return;
+    }
+
+    print("User ID: $user_id");
+    print("Email utilisateur : ${user.email}");
+
     if (_formKey.currentState!.validate()) {
       await InsertFunction.insertAvis(
         text: _textController.text,
         note: _rating.toInt(),
         titre: _titleController.text,
       );
+
       final idAvis = await FetchFunction.fetchLastAvisId();
       if (idAvis != null) {
-        await InsertFunction.insertDeposer(int.parse(user.id), widget.idRestaurant, idAvis);
+        await InsertFunction.insertDeposer(user_id, widget.idRestaurant, idAvis);
         setState(() {});
         _titleController.clear();
         _textController.clear();
@@ -54,16 +64,18 @@ class _RestaurantAvisSectionState extends State<RestaurantAvisSection> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.idRestaurant);
+
     return Card(
       color: Colors.grey[900],
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FutureBuilder<List<Map<String, dynamic>>>(
-              future: FetchFunction.fetchAvis(),
+              future: FetchFunction.fetchAvisParRestaurant(widget.idRestaurant),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -75,13 +87,9 @@ class _RestaurantAvisSectionState extends State<RestaurantAvisSection> {
                       style: TextStyle(color: Colors.white70));
                 }
 
-                final avisList = snapshot.data!
-                    .where((avis) => avis['id_restaurant'] == widget.idRestaurant)
-                    .toList();
-
+                final avisList = snapshot.data!;
                 final moyenne = avisList.isNotEmpty
-                    ? avisList.map((a) => a['note'] ?? 0).reduce((a, b) => a + b) /
-                        avisList.length
+                    ? avisList.map((a) => a['note'] ?? 0).reduce((a, b) => a + b) / avisList.length
                     : 0;
 
                 return Column(
@@ -107,16 +115,42 @@ class _RestaurantAvisSectionState extends State<RestaurantAvisSection> {
                     ),
                     const SizedBox(height: 12),
                     ...avisList.map((avis) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              avis['text'] ?? '',
-                              style: const TextStyle(color: Colors.white70),
-                            ),
-                          ],
+                      return Card(
+                        color: Colors.grey[850],
+                        margin: const EdgeInsets.symmetric(vertical: 6),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                avis['Titre'] ?? 'Sans titre',
+                                style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Text(
+                                    avis['Utilisateur']?['username'] ?? 'Anonyme',
+                                    style: const TextStyle(color: Colors.white54),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    "${avis['note']} ★",
+                                    style: const TextStyle(color: Colors.amberAccent),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                avis['text'] ?? '',
+                                style: const TextStyle(color: Colors.white70),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     }),
