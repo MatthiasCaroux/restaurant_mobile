@@ -120,7 +120,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
               webSite: restaurant["site_restaurant"]?? '',
             ),
             const SizedBox(height: 16),
-            RestaurantAvisSection(idRestaurant: restaurant['id_restaurant']),
+            RestaurantAvisSection(idRestaurant: restaurant['id_restaurant'], ),
             const SizedBox(height: 30),
           ],
         ),
