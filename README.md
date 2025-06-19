@@ -98,5 +98,3 @@ L'application utilise **deux bases de données** :
 - **Présentation orale à planifier avec les chargés de TP** ✅
 
 ---
-📌 **Développé par [Votre Groupe] dans le cadre de la SAE 4.04 - BUT Informatique**
-
