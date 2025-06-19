@@ -72,13 +72,10 @@ L'application utilise **deux bases de données** :
 ```bash
 📦 iutableso
  ┣ 📂 lib # Code principal
- ┃ ┣ 📂 models # Modèles de données
- ┃ ┣ 📂 screens # Interfaces utilisateur
- ┃ ┣ 📂 services # Interaction avec Supabase / Sqflite
- ┃ ┣ 📂 widgets # Composants réutilisables
+ ┃ ┣ 📂 database # Interaction avec la base de donnée
+ ┃ ┣ 📂 views # Les différentes vues
  ┣ 📂 test # Tests unitaires
  ┣ 📜 pubspec.yaml # Dépendances Flutter
- ┣ 📜 .env.example # Exemple de configuration Supabase
  ┣ 📜 README.md # Documentation du projet
 ```
 
